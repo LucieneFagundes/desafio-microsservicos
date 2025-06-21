@@ -1,3 +1,4 @@
+import "@opentelemetry/auto-instrumentations-node/register";
 import "../broker/subscriber.ts";
 import { fastify } from "fastify";
 import {
@@ -5,11 +6,14 @@ import {
   validatorCompiler,
   type ZodTypeProvider,
 } from "fastify-type-provider-zod";
+import fastifyCors from "@fastify/cors";
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 
 app.setSerializerCompiler(serializerCompiler);
 app.setValidatorCompiler(validatorCompiler);
+
+app.register(fastifyCors, { origin: "*" });
 
 app.get("/health", () => {
   return "OK";
